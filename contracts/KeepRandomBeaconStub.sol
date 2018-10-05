@@ -50,9 +50,16 @@ contract KeepRandomBeaconStub is Ownable {
      * which will include a random number (by signing the previous entry's random number).
      * @param blockReward The value in KEEP for generating the signature.
      * @param seed Initial seed random value from the client. It should be a cryptographically generated random value.
+     * @param callbackContract Callback contract address.
+     * @param callbackMethod Callback contract method signature.
      * @return An uint256 representing uniquely generated ID. It is also returned as part of the event.
      */
-    function requestRelayEntry(uint256 blockReward, uint256 seed) public payable returns (uint256 requestID) {
+    function requestRelayEntry(
+        uint256 blockReward,
+        uint256 seed,
+        address callbackContract,
+        bytes4 callbackMethod
+    ) public payable returns (uint256 requestID) {
         requestID = _seq++;
         emit RelayEntryRequested(requestID, msg.value, blockReward, seed, block.number);
 
@@ -62,6 +69,7 @@ contract KeepRandomBeaconStub is Ownable {
         emit RelayEntryGenerated(requestID, groupSignature, groupID, _previousEntry, block.number);
 
         _previousEntry = groupSignature;
+        callbackContract.call(callbackMethod, groupSignature);
         return requestID;
     }
 
