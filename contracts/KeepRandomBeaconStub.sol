@@ -71,11 +71,13 @@ contract KeepRandomBeaconStub is Ownable {
         _previousEntry = groupSignature;
 
         // Mocked callback for demo purposes
-        bool callbackResult = callbackContract.call(
-            bytes4(keccak256(abi.encodePacked(callbackMethod))),
-            groupSignature
-        );
-        require(callbackResult, "Require successful callback.");
+        if (callbackContract != address(0)) {
+            bool callbackResult = callbackContract.call(
+                bytes4(keccak256(abi.encodePacked(callbackMethod))),
+                groupSignature
+            );
+            require(callbackResult, "Require successful callback.");
+        }
 
         return requestID;
     }
