@@ -58,7 +58,7 @@ contract KeepRandomBeaconStub is Ownable {
         uint256 blockReward,
         uint256 seed,
         address callbackContract,
-        bytes4 callbackMethod
+        string callbackMethod
     ) public payable returns (uint256 requestID) {
         requestID = _seq++;
         emit RelayEntryRequested(requestID, msg.value, blockReward, seed, block.number);
@@ -69,7 +69,7 @@ contract KeepRandomBeaconStub is Ownable {
         emit RelayEntryGenerated(requestID, groupSignature, groupID, _previousEntry, block.number);
 
         _previousEntry = groupSignature;
-        callbackContract.call(callbackMethod, groupSignature);
+        callbackContract.call(bytes4(keccak256(callbackMethod)), groupSignature);
         return requestID;
     }
 
