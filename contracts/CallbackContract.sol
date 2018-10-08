@@ -22,7 +22,7 @@ contract CallbackContract {
     /**
      * @dev Returns previously set random number.
      */
-    function randomNumber() public pure returns (uint256)
+    function randomNumber() public view returns (uint256)
     {
         return _randomNumber;
     }

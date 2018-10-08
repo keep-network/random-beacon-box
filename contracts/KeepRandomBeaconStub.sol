@@ -69,7 +69,14 @@ contract KeepRandomBeaconStub is Ownable {
         emit RelayEntryGenerated(requestID, groupSignature, groupID, _previousEntry, block.number);
 
         _previousEntry = groupSignature;
-        callbackContract.call(bytes4(keccak256(callbackMethod)), groupSignature);
+
+        // Mocked callback for demo purposes
+        bool callbackResult = callbackContract.call(
+            bytes4(keccak256(abi.encodePacked(callbackMethod))),
+            groupSignature
+        );
+        require(callbackResult, "Require successful callback.");
+
         return requestID;
     }
 
