@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
@@ -51,7 +51,7 @@ contract KeepRandomBeacon is Ownable {
     /**
      * @dev Delegate call to the current implementation contract.
      */
-    function() public payable {
+    function() external payable {
         address _impl = implementation();
         assembly {
             let ptr := mload(0x40)

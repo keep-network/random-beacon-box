@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.4;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
@@ -23,7 +23,7 @@ contract KeepRandomBeaconStub is Ownable {
     /**
      * @dev Prevent receiving ether without explicitly calling a function.
      */
-    function() public payable {
+    function() external payable {
         revert("Can not call contract without explicitly calling a function.");
     }
 
@@ -58,7 +58,7 @@ contract KeepRandomBeaconStub is Ownable {
         uint256 blockReward,
         uint256 seed,
         address callbackContract,
-        string callbackMethod
+        string memory callbackMethod
     ) public payable returns (uint256 requestID) {
         requestID = _seq++;
         emit RelayEntryRequested(requestID, msg.value, blockReward, seed, block.number);
@@ -72,11 +72,8 @@ contract KeepRandomBeaconStub is Ownable {
 
         // Mocked callback for demo purposes
         if (callbackContract != address(0)) {
-            bool callbackResult = callbackContract.call(
-                bytes4(keccak256(abi.encodePacked(callbackMethod))),
-                groupSignature
-            );
-            require(callbackResult, "Require successful callback.");
+            (bool result, ) = callbackContract.call(abi.encodeWithSignature(callbackMethod, groupSignature));
+            require(result, "Require successful callback.");
         }
 
         return requestID;
@@ -85,7 +82,7 @@ contract KeepRandomBeaconStub is Ownable {
     /**
      * @dev Returns implementation version.
      */
-    function version() public pure returns (string) {
+    function version() public pure returns (string memory) {
         return "V1";
     }
 }
